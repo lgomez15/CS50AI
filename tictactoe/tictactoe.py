@@ -57,6 +57,7 @@ def actions(board):
             if cell == EMPTY:
                 possible_actions.add((i, j))
 
+
     return possible_actions
 
 
@@ -72,7 +73,7 @@ def result(board, action):
     # Get the current player
     current_player = player(board)
 
-    # Create a deep copy of the board
+    # Create a deep copy of the board: a deep copy constructs a new compound object and then, recursively, inserts copies into it of the objects found in the original.
     new_board = [row.copy() for row in board]
 
     # Update the board with the new action
@@ -111,12 +112,29 @@ def terminal(board):
     Returns True if game is over, False otherwise.
     """
     
+      # Check rows
+    for row in board:
+        if row[0] == row[1] == row[2] and row[0] != EMPTY:
+            return True
+        
+    # Check columns
+    for j in range(3):
+        if board[0][j] == board[1][j] == board[2][j] and board[0][j] != EMPTY:
+            return True
+        
+    # Check diagonals
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY:
+        return True
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY:
+        return True
+    
+    # Check if the board is full
     for row in board:
         for cell in row:
             if cell == EMPTY:
                 return False
-            
-    return True
+    
+    return False
 
 
 def utility(board):
@@ -154,11 +172,14 @@ def minimax(board):
     # If the current player is X, maximize the score
     if current_player == X:
         _, action = max_value(board)
+        print(action)
         return action
     
     # If the current player is O, minimize the score
     if current_player == O:
         _, action = min_value(board)
+        
+        print(action)
         return action
     
     raise NotImplementedError
@@ -185,6 +206,7 @@ def max_value(board):
         if min_val > value:
             value = min_val
             best_action = action
+
 
     return value, best_action
 
